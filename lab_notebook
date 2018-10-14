@@ -1,0 +1,31 @@
+# Assembly and annotation of eucariotic genome
+# project folder is ~/tardi, original_files, intermediate and results folders are
+# ~/tardi/original_files, ~/tardi/intermediate, ~/tardi/results respectively
+
+
+# No need to assemble the genome since it takes a lot of time and computational resources
+# Download the assembled genome via the link provided. It goes to original_files
+
+
+# Extracting the protein sequences using Perl script provided
+perl getAnnoFasta.pl augustus.whole.gff
+
+# Checking the number of proteins
+
+grep '>' augustus.whole.aa | wc -l
+
+#..which gives us 16435! that's a lot
+
+# Narrowing down the list of potential candidated through the results of TSM of
+# chromatin fraction
+
+# Making a local database of all proteins received with blast+
+makeblastdb -in tardi/intermediate/augustus.whole.aa -dbtype prot -out tardi/intermediate/prot_seq
+
+# Using blastp algorithm against the local base from previous step
+blastp -db tardi/intermediate/prot_seq -query tardi/intermediate/peptides.fa -out tardi/results/result_db1.txt -outfmt 6
+
+# tried to cutoff with -evalue 1e-5,4,3,2, also tried -max_target_seqs, -num_alignments
+
+# As a result 92 sequences
+# Going to annotaion servers and blast
