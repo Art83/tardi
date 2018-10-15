@@ -20,12 +20,41 @@ grep '>' augustus.whole.aa | wc -l
 # chromatin fraction
 
 # Making a local database of all proteins received with blast+
-makeblastdb -in tardi/intermediate/augustus.whole.aa -dbtype prot -out tardi/intermediate/prot_seq
+makeblastdb -in tardi/intermediate/augustus.whole.aa -dbtype prot -out tardi/intermediate/prot_seq  -parse_seqids
+
+Building a new DB, current time: 10/15/2018 14:36:28
+New DB name:   /home/arthur/tardi/intermediate/prot_seq
+New DB title:  tardi/intermediate/augustus.whole.aa
+Sequence type: Protein
+Keep Linkouts: T
+Keep MBits: T
+Maximum file size: 1000000000B
+Adding sequences from FASTA; added 16435 sequences in 0.630013 seconds.
 
 # Using blastp algorithm against the local base from previous step
 blastp -db tardi/intermediate/prot_seq -query tardi/intermediate/peptides.fa -out tardi/results/result_db1.txt -outfmt 6
 
 # tried to cutoff with -evalue 1e-5,4,3,2, also tried -max_target_seqs, -num_alignments
 
-# As a result 92 sequences
+#Not quite clear if I should use 100% identity sequences or all of them. Just in case created 2 txt files
+
+awk '$3==100 {print $2}' result_db.txt | uniq > prot_100_iden.txt
+
+# 50 sequences
+ 
+
+awk '{print $2}' result_db.txt | uniq > prot_all.txt
+
+# 81 sequences
+
+# Extracting the protein sequences from the local base 
+
+blastdbcmd -db tardi/intermediate/prot_seq -dbtype prot -entry_batch tardi/results/prot_100_iden.txt -outfmt %f -out tardi/results/prot_seq_100.fa
+blastdbcmd -db tardi/intermediate/prot_seq -dbtype prot -entry_batch tardi/results/prot_all.txt -outfmt %f -out tardi/results/prot_seq_all.fa
+
+cat prot_seq_all.fa | grep '>'| sort | uniq | wc -l
+# 19 unique proteins
+cat prot_seq_100.fa | grep '>'| sort | uniq | wc -l
+# 26 unique proteins , not big of a difference
 # Going to annotaion servers and blast
+
