@@ -55,6 +55,6 @@ blastdbcmd -db tardi/intermediate/prot_seq -dbtype prot -entry_batch tardi/resul
 cat prot_seq_all.fa | grep '>'| sort | uniq | wc -l
 # 19 unique proteins
 cat prot_seq_100.fa | grep '>'| sort | uniq | wc -l
-# 26 unique proteins , not big of a difference
+# 26 unique proteins
 # Going to annotaion servers and blast
 
